@@ -1,0 +1,747 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solicitud de equipos | PGD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --papel: #EEF1F5;
+    --blanco: #FFFFFF;
+    --tinta: #18202E;
+    --gris: #586377;
+    --linea: #CDD4DE;
+    --etiqueta: #F4C20D;
+    --azul: #1F4FB5;
+    --azul-osc: #173D8C;
+    --error: #B42318;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--papel);
+    color: var(--tinta);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .barra {
+    background: var(--tinta);
+    color: #fff;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0 1rem;
+    padding: 0 max(1rem, calc((100vw - 1040px) / 2));
+  }
+  .marca { display: flex; align-items: center; gap: .6rem; padding: 1rem 0; font-weight: 600; }
+  .logo {
+    background: var(--etiqueta); color: var(--tinta);
+    font-family: "IBM Plex Sans Condensed", sans-serif; font-weight: 700;
+    padding: .05rem .45rem; border-radius: 3px;
+  }
+  .pestanas { display: flex; gap: .25rem; }
+  .pestana {
+    background: none; border: 0; color: #C9D1DE; font: inherit;
+    padding: .8rem 1.1rem; border-radius: 6px 6px 0 0; cursor: pointer;
+  }
+  .pestana:hover { color: #fff; }
+  .pestana[aria-selected="true"] { background: var(--papel); color: var(--tinta); font-weight: 600; }
+
+  main { max-width: 1040px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+  h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 .5rem; }
+  h2 { font-size: 1.35rem; line-height: 1.3; margin: .75rem 0 1rem; }
+  h3 { font-size: 1.05rem; margin: 0 0 .5rem; }
+  .intro { color: var(--gris); max-width: 62ch; margin: 0 0 2rem; }
+
+  fieldset {
+    border: 1px solid var(--linea); background: var(--blanco); border-radius: 6px;
+    padding: 1.25rem 1.5rem 1.5rem; margin: 0 0 1.25rem; min-width: 0;
+  }
+  legend { font-weight: 600; font-size: 1.05rem; padding: 0 .4rem; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.25rem; }
+  .completo { grid-column: 1 / -1; }
+  label { display: block; font-weight: 500; font-size: .92rem; margin-bottom: .3rem; }
+  .ayuda { color: var(--gris); font-size: .86rem; margin: .25rem 0 0; }
+  input, select, textarea {
+    width: 100%; font: inherit; color: var(--tinta); background: #fff;
+    padding: .6rem .7rem; border: 1px solid var(--linea); border-radius: 4px;
+  }
+  textarea { min-height: 7rem; resize: vertical; }
+  :focus-visible { outline: 3px solid var(--etiqueta); outline-offset: 2px; }
+
+  .btn {
+    font: inherit; font-weight: 600; cursor: pointer;
+    border: 1px solid var(--tinta); background: #fff; color: var(--tinta);
+    padding: .6rem 1.1rem; border-radius: 4px;
+  }
+  .btn:hover { background: #F6F7F9; }
+  .btn.primario { background: var(--azul); border-color: var(--azul); color: #fff; }
+  .btn.primario:hover { background: var(--azul-osc); }
+  .btn:disabled { opacity: .6; cursor: wait; }
+  .acciones { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-top: 1rem; }
+  .error { color: var(--error); font-weight: 500; }
+
+  /* Etiqueta de radicado: parece la placa de inventario que se pega a los equipos */
+  .tag {
+    display: inline-flex; align-items: center; gap: .55rem;
+    background: var(--etiqueta); color: var(--tinta);
+    font-family: "IBM Plex Sans Condensed", sans-serif; font-weight: 700;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+    padding: .25rem .75rem .25rem .55rem; border-radius: 3px 12px 12px 3px;
+  }
+  .tag::before {
+    content: ""; width: .5rem; height: .5rem; border-radius: 50%;
+    background: var(--papel); box-shadow: inset 0 0 0 1.5px var(--tinta);
+  }
+  .tag.grande { font-size: 2.6rem; padding: .5rem 1.6rem .5rem 1.1rem; border-radius: 4px 22px 22px 4px; }
+  .tag.grande::before { width: 1rem; height: 1rem; }
+
+  .confirmacion { background: var(--blanco); border: 1px solid var(--linea); border-radius: 6px; padding: 2rem; }
+  .confirmacion .tag { animation: pegar .45s cubic-bezier(.2, .9, .3, 1.3); }
+  @keyframes pegar { from { transform: rotate(-6deg) scale(1.15); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  .filtros { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: .75rem; margin-bottom: 1rem; }
+  .tabla-caja { overflow-x: auto; background: var(--blanco); border: 1px solid var(--linea); border-radius: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: .93rem; }
+  th, td { text-align: left; padding: .7rem .9rem; border-bottom: 1px solid var(--linea); white-space: nowrap; }
+  th { font-weight: 600; color: var(--gris); background: #F7F8FA; }
+  tbody tr { cursor: pointer; }
+  tbody tr:hover, tbody tr:focus-visible { background: #FFF9E0; }
+  .vacio { padding: 2.5rem 1rem; text-align: center; color: var(--gris); white-space: normal; }
+
+  .estado { display: inline-block; padding: .1rem .6rem; border-radius: 999px; font-size: .82rem; font-weight: 600; background: #E4E8EE; }
+  .estado.en-cotizacion { background: #FFF1C2; color: #6B4E00; }
+  .estado.enviada-a-compras { background: #DCE7FB; color: #173D8C; }
+  .estado.aprobada { background: #D9F2E3; color: #135C33; }
+  .estado.rechazada { background: #FBE0DD; color: #8A1C12; }
+  .estado.entregada { background: var(--tinta); color: #fff; }
+
+  dialog {
+    width: min(760px, calc(100vw - 2rem)); max-height: calc(100vh - 2rem);
+    border: 0; border-radius: 8px; padding: 1.75rem; color: var(--tinta);
+  }
+  dialog::backdrop { background: rgba(24, 32, 46, .55); }
+  .det-cabeza { display: flex; align-items: center; gap: .75rem; }
+  .cerrar { margin-left: auto; background: none; border: 0; font-size: 1.8rem; line-height: 1; cursor: pointer; color: var(--gris); }
+  .datos { display: grid; grid-template-columns: max-content 1fr; gap: .4rem 1.25rem; margin: 0 0 1rem; }
+  .datos dt { color: var(--gris); font-size: .9rem; }
+  .datos dd { margin: 0; white-space: pre-wrap; }
+  .bloque { border-top: 1px solid var(--linea); padding-top: 1.25rem; margin-top: 1.5rem; }
+  .historial { margin: 0; padding-left: 1.2rem; font-size: .92rem; }
+  .historial li { margin-bottom: .4rem; }
+  .historial small { color: var(--gris); display: block; }
+
+  .aviso {
+    position: fixed; left: 50%; bottom: 1.5rem; transform: translate(-50%, 150%);
+    background: var(--tinta); color: #fff; padding: .75rem 1.2rem; border-radius: 6px;
+    transition: transform .25s ease; max-width: calc(100vw - 2rem); z-index: 10;
+  }
+  .aviso.visible { transform: translate(-50%, 0); }
+
+  @media (max-width: 680px) {
+    .grid, .filtros { grid-template-columns: 1fr; }
+    h1 { font-size: 1.6rem; }
+    .tag.grande { font-size: 1.9rem; }
+    .datos { grid-template-columns: 1fr; }
+    .datos dd { margin-bottom: .5rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before { animation: none !important; transition: none !important; }
+  }
+
+  /* Equipos dentro de la solicitud */
+  .agregar { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .75rem; }
+  .agregar .btn { border-style: dashed; }
+  .item { border: 1px solid var(--linea); border-left: 6px solid var(--etiqueta); border-radius: 6px; padding: 1rem 1.25rem 1.25rem; margin-top: 1rem; background: #FCFCFD; }
+  .item-cabeza { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .item-cabeza h3 { margin: 0; font-size: 1.1rem; }
+  .item-cabeza .cantidad { display: flex; align-items: center; gap: .4rem; margin-left: auto; }
+  .item-cabeza .cantidad label { margin: 0; }
+  .item-cabeza .cantidad input { width: 5.5rem; }
+  .quitar { background: none; border: 0; color: var(--error); font: inherit; font-weight: 500; cursor: pointer; text-decoration: underline; }
+  .checks { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; }
+  .checks label { display: flex; align-items: center; gap: .4rem; font-weight: 400; margin: 0; }
+  .checks input { width: auto; }
+  .sin-items { color: var(--gris); margin: .5rem 0 0; }
+  .equipos-detalle { margin: 0 0 1rem; }
+  .equipos-detalle h4 { margin: 1rem 0 .3rem; font-size: 1rem; }
+  .equipos-detalle ul { margin: 0; padding-left: 1.2rem; font-size: .93rem; }
+  .celda-equipos { white-space: normal; min-width: 14rem; }
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <div class="marca"><span class="logo">PGD</span> Solicitud de equipos</div>
+  <nav class="pestanas" role="tablist">
+    <button class="pestana" role="tab" aria-selected="true" data-vista="nueva">Nueva solicitud</button>
+    <button class="pestana" role="tab" aria-selected="false" data-vista="seguimiento" id="pestana-seguimiento">Mis solicitudes</button>
+  </nav>
+</header>
+
+<main>
+  <!-- Vista: nueva solicitud -->
+  <section id="vista-nueva">
+    <div id="bloque-form">
+      <h1>Pide equipos</h1>
+      <p class="intro">Agrega en una sola solicitud todos los equipos que necesitas. TI revisa el pedido, compara opciones y lo envía a Compras. Recibirás un número de radicado para hacerle seguimiento.</p>
+
+      <form id="form-solicitud" novalidate>
+        <fieldset>
+          <legend>Quién la pide</legend>
+          <div class="grid">
+            <div>
+              <label for="solicitanteNombre">Nombre completo</label>
+              <input id="solicitanteNombre" name="solicitanteNombre" autocomplete="name" required>
+            </div>
+            <div>
+              <label for="solicitanteCorreo">Correo corporativo</label>
+              <input id="solicitanteCorreo" name="solicitanteCorreo" type="email" autocomplete="email" required>
+            </div>
+            <div>
+              <label for="area">Área</label>
+              <select id="area" name="area" required></select>
+            </div>
+            <div>
+              <label for="proyecto">Proyecto o centro de costo (opcional)</label>
+              <input id="proyecto" name="proyecto" placeholder="Ej.: Secretaría de Tránsito">
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Equipos que necesitas</legend>
+          <p class="ayuda">Elige el tipo de equipo para agregarlo. Puedes agregar varios, por ejemplo 3 portátiles y 1 impresora.</p>
+          <div id="items"></div>
+          <p class="sin-items" id="sin-items">Todavía no has agregado equipos.</p>
+          <div class="agregar" id="botones-agregar"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Para qué los necesitas</legend>
+          <div class="grid">
+            <div>
+              <label for="prioridad">Prioridad</label>
+              <select id="prioridad" name="prioridad" required></select>
+            </div>
+            <div>
+              <label for="fechaRequerida">Fecha en que los necesitas (opcional)</label>
+              <input id="fechaRequerida" name="fechaRequerida" type="date">
+            </div>
+            <div class="completo">
+              <label for="justificacion">¿Para qué se van a usar?</label>
+              <textarea id="justificacion" name="justificacion" required></textarea>
+              <p class="ayuda">Ejemplo: puestos para el nuevo equipo del proyecto de la Secretaría de Tránsito, que inicia el 15 de octubre.</p>
+            </div>
+          </div>
+        </fieldset>
+
+        <p id="error-form" class="error" role="alert" hidden></p>
+        <div class="acciones">
+          <button type="submit" class="btn primario" id="btn-registrar">Registrar solicitud</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="confirmacion" class="confirmacion" hidden>
+      <p>Solicitud registrada. Tu número de radicado es:</p>
+      <span class="tag grande" id="conf-radicado"></span>
+      <p class="intro" style="margin-top:1.25rem">Guárdalo para consultar el estado en la pestaña Mis solicitudes.</p>
+      <div class="acciones">
+        <button class="btn" id="conf-pdf">Descargar PDF</button>
+        <button class="btn primario" id="conf-nueva">Registrar otra solicitud</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vista: seguimiento -->
+  <section id="vista-seguimiento" hidden>
+    <h1 id="seg-titulo">Mis solicitudes</h1>
+    <p class="intro" id="seg-intro"></p>
+    <div class="filtros">
+      <div>
+        <label for="f-buscar">Buscar</label>
+        <input id="f-buscar" type="search" placeholder="Radicado, nombre, proyecto o equipo">
+      </div>
+      <div>
+        <label for="f-estado">Estado</label>
+        <select id="f-estado"></select>
+      </div>
+      <div>
+        <label for="f-area">Área</label>
+        <select id="f-area"></select>
+      </div>
+    </div>
+    <div class="tabla-caja">
+      <table>
+        <thead>
+          <tr><th>Radicado</th><th>Fecha</th><th>Área</th><th>Solicitante</th><th>Equipos</th><th>Unid.</th><th>Prioridad</th><th>Estado</th></tr>
+        </thead>
+        <tbody id="tabla-cuerpo"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<!-- Detalle de una solicitud -->
+<dialog id="detalle" aria-labelledby="det-titulo">
+  <div class="det-cabeza">
+    <span class="tag" id="det-radicado"></span>
+    <span class="estado" id="det-estado"></span>
+    <button class="cerrar" id="det-cerrar" aria-label="Cerrar">×</button>
+  </div>
+  <h2 id="det-titulo"></h2>
+  <dl class="datos" id="det-datos"></dl>
+  <div class="equipos-detalle" id="det-equipos"></div>
+  <div class="acciones">
+    <button class="btn" id="det-pdf">Descargar PDF</button>
+    <button class="btn solo-ti" id="det-prompt">Copiar prompt de comparación</button>
+    <button class="btn primario solo-ti" id="det-compras">Enviar a Compras</button>
+  </div>
+
+  <section class="bloque solo-ti">
+    <h3>Comparación de opciones</h3>
+    <p class="ayuda">Pega el prompt en Claude o ChatGPT y copia aquí la respuesta. Se incluye en el PDF de TI y en el correo a Compras.</p>
+    <textarea id="det-comparacion" rows="8" aria-label="Comparación de opciones"></textarea>
+    <div class="acciones"><button class="btn" id="det-guardar-comp">Guardar comparación</button></div>
+  </section>
+
+  <section class="bloque solo-ti">
+    <h3>Cambiar estado</h3>
+    <div class="grid">
+      <div>
+        <label for="det-nuevo-estado">Nuevo estado</label>
+        <select id="det-nuevo-estado"></select>
+      </div>
+      <div>
+        <label for="det-comentario">Comentario (opcional)</label>
+        <input id="det-comentario" placeholder="Ej.: cotización recibida de 2 proveedores">
+      </div>
+    </div>
+    <div class="acciones"><button class="btn" id="det-guardar-estado">Actualizar estado</button></div>
+  </section>
+
+  <section class="bloque">
+    <h3>Historial</h3>
+    <ol class="historial" id="det-historial"></ol>
+  </section>
+</dialog>
+
+<div id="aviso" class="aviso" role="status" aria-live="polite"></div>
+
+<script>
+  const $ = (s) => document.querySelector(s);
+  let CONFIG = null;
+  let SOLICITUDES = [];
+  let ultimoRadicado = null;
+  let actual = null;
+  let contadorItems = 0;
+
+  // ---------- Utilidades ----------
+  async function api(url, opciones = {}) {
+    const r = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...opciones });
+    const datos = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(datos.error || 'No se pudo completar la operación.');
+    return datos;
+  }
+
+  function el(tag, props = {}, hijos = []) {
+    const n = Object.assign(document.createElement(tag), props);
+    [].concat(hijos).forEach((h) => n.append(h instanceof Node ? h : String(h ?? '')));
+    return n;
+  }
+
+  function claseEstado(estado) {
+    return estado.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, '-');
+  }
+
+  function chipEstado(estado) {
+    return el('span', { className: 'estado ' + claseEstado(estado), textContent: estado });
+  }
+
+  function fecha(iso, conHora = false) {
+    if (!iso) return '-';
+    const d = new Date(iso);
+    return conHora ? d.toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' })
+                   : d.toLocaleDateString('es-CO', { dateStyle: 'medium' });
+  }
+
+  function llenarSelect(select, opciones, textoVacio) {
+    select.replaceChildren();
+    if (textoVacio !== undefined) select.append(el('option', { value: '', textContent: textoVacio }));
+    opciones.forEach((o) => select.append(el('option', { value: o, textContent: o })));
+  }
+
+  let temporizadorAviso;
+  function aviso(mensaje) {
+    const a = $('#aviso');
+    a.textContent = mensaje;
+    a.classList.add('visible');
+    clearTimeout(temporizadorAviso);
+    temporizadorAviso = setTimeout(() => a.classList.remove('visible'), 3500);
+  }
+
+  // Líneas legibles de un equipo ("Memoria RAM: 16 GB")
+  function describirItem(item) {
+    const def = CONFIG.catalogo[item.tipo];
+    const lineas = [];
+    if (def) def.campos.forEach((c) => { const v = item.especificaciones?.[c.id]; if (v) lineas.push(`${c.etiqueta}: ${v}`); });
+    if (item.accesorios?.length) lineas.push(`Accesorios: ${item.accesorios.join(', ')}`);
+    if (item.observaciones) lineas.push(`Observaciones: ${item.observaciones}`);
+    return lineas;
+  }
+
+  // Recordar nombre en este navegador para no escribirlo cada vez
+  function solicitanteGuardado() {
+    try { return JSON.parse(localStorage.getItem('pgd-solicitante')) || {}; } catch { return {}; }
+  }
+  function guardarSolicitante(nombre, correo) {
+    try { localStorage.setItem('pgd-solicitante', JSON.stringify({ nombre, correo })); } catch {}
+  }
+
+  // ---------- Navegación ----------
+  function mostrarVista(vista) {
+    document.querySelectorAll('.pestana').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.vista === vista)));
+    $('#vista-nueva').hidden = vista !== 'nueva';
+    $('#vista-seguimiento').hidden = vista !== 'seguimiento';
+    if (vista === 'seguimiento') cargarLista();
+  }
+  document.querySelectorAll('.pestana').forEach((b) => b.addEventListener('click', () => mostrarVista(b.dataset.vista)));
+
+  // ---------- Equipos dentro del formulario ----------
+  function actualizarSinItems() {
+    $('#sin-items').hidden = $('#items').children.length > 0;
+  }
+
+  function agregarItem(tipo) {
+    const def = CONFIG.catalogo[tipo];
+    const n = ++contadorItems;
+    const tarjeta = el('div', { className: 'item' });
+    tarjeta.dataset.tipo = tipo;
+
+    const cantidad = el('input', { type: 'number', min: 1, max: 500, value: 1, id: `cant-${n}`, className: 'item-cantidad' });
+    const quitar = el('button', { type: 'button', className: 'quitar', textContent: 'Quitar' });
+    quitar.addEventListener('click', () => { tarjeta.remove(); actualizarSinItems(); });
+
+    tarjeta.append(el('div', { className: 'item-cabeza' }, [
+      el('h3', { textContent: tipo }),
+      el('div', { className: 'cantidad' }, [el('label', { htmlFor: `cant-${n}`, textContent: 'Cantidad' }), cantidad]),
+      quitar,
+    ]));
+
+    const grid = el('div', { className: 'grid' });
+    def.campos.forEach((c) => {
+      const id = `c-${n}-${c.id}`;
+      const select = el('select', { id });
+      select.dataset.campo = c.id;
+      llenarSelect(select, c.opciones, 'Elige una opción');
+      const caja = el('div', { className: c.id === 'perfil' ? 'completo' : '' }, [el('label', { htmlFor: id, textContent: c.etiqueta }), select]);
+      if (c.ayuda) caja.append(el('p', { className: 'ayuda', textContent: c.ayuda }));
+      grid.append(caja);
+
+      // Al elegir el perfil de uso se sugiere la configuración
+      if (c.id === 'perfil' && def.perfiles) {
+        select.addEventListener('change', () => {
+          const sug = def.perfiles[select.value];
+          if (!sug) return;
+          Object.entries(sug).forEach(([campo, valor]) => {
+            const s = tarjeta.querySelector(`select[data-campo="${campo}"]`);
+            if (s) s.value = valor;
+          });
+          aviso('Te sugerimos una configuración. Revísala y ajústala si hace falta.');
+        });
+      }
+    });
+    tarjeta.append(grid);
+
+    if (def.accesorios.length) {
+      const checks = el('div', { className: 'checks' });
+      def.accesorios.forEach((a) => {
+        const cb = el('input', { type: 'checkbox', value: a, className: 'item-accesorio' });
+        checks.append(el('label', {}, [cb, a]));
+      });
+      tarjeta.append(el('div', { style: 'margin-top:1rem' }, [el('p', { style: 'font-weight:500;font-size:.92rem;margin:0 0 .4rem', textContent: 'Accesorios (opcional)' }), checks]));
+    }
+
+    const obsId = `obs-${n}`;
+    tarjeta.append(el('div', { style: 'margin-top:1rem' }, [
+      el('label', { htmlFor: obsId, textContent: 'Observaciones (opcional)' }),
+      el('textarea', { id: obsId, className: 'item-observaciones', rows: 2, placeholder: 'Ej.: software especial que debe tener, marca preferida, dónde se instalará' }),
+    ]));
+
+    $('#items').append(tarjeta);
+    actualizarSinItems();
+    tarjeta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function leerItems() {
+    return [...document.querySelectorAll('#items .item')].map((t) => ({
+      tipo: t.dataset.tipo,
+      cantidad: t.querySelector('.item-cantidad').value,
+      especificaciones: Object.fromEntries([...t.querySelectorAll('select[data-campo]')].map((s) => [s.dataset.campo, s.value])),
+      accesorios: [...t.querySelectorAll('.item-accesorio:checked')].map((c) => c.value),
+      observaciones: t.querySelector('.item-observaciones').value,
+    }));
+  }
+
+  // ---------- Formulario ----------
+  $('#form-solicitud').addEventListener('input', () => { $('#error-form').hidden = true; });
+
+  $('#form-solicitud').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const datos = Object.fromEntries(new FormData(ev.target));
+    datos.items = leerItems();
+    const error = $('#error-form');
+    error.hidden = true;
+    const boton = $('#btn-registrar');
+    boton.disabled = true;
+    boton.textContent = 'Registrando…';
+    try {
+      const { radicado } = await api('/api/solicitudes', { method: 'POST', body: JSON.stringify(datos) });
+      guardarSolicitante(datos.solicitanteNombre, datos.solicitanteCorreo);
+      ultimoRadicado = radicado;
+      $('#conf-radicado').textContent = radicado;
+      $('#bloque-form').hidden = true;
+      $('#confirmacion').hidden = false;
+      window.scrollTo({ top: 0 });
+    } catch (e) {
+      error.textContent = e.message;
+      error.hidden = false;
+    } finally {
+      boton.disabled = false;
+      boton.textContent = 'Registrar solicitud';
+    }
+  });
+
+  function descargarPDF(radicado) {
+    window.open(`/api/solicitudes/${encodeURIComponent(radicado)}/pdf`, '_blank');
+  }
+
+  $('#conf-pdf').addEventListener('click', () => descargarPDF(ultimoRadicado));
+  $('#conf-nueva').addEventListener('click', () => {
+    const f = $('#form-solicitud');
+    ['proyecto', 'prioridad', 'fechaRequerida', 'justificacion'].forEach((c) => (f.elements[c].value = ''));
+    $('#items').replaceChildren();
+    actualizarSinItems();
+    $('#confirmacion').hidden = true;
+    $('#bloque-form').hidden = false;
+  });
+
+  // ---------- Seguimiento ----------
+  function filaMensaje(texto) {
+    return el('tr', {}, el('td', { colSpan: 8, className: 'vacio', textContent: texto }));
+  }
+
+  async function cargarLista() {
+    const cuerpo = $('#tabla-cuerpo');
+    if (!CONFIG.usuario) {
+      cuerpo.replaceChildren(filaMensaje('Inicia sesión con tu cuenta corporativa para ver tus solicitudes.'));
+      return;
+    }
+    cuerpo.replaceChildren(filaMensaje('Cargando solicitudes…'));
+    try {
+      SOLICITUDES = await api('/api/solicitudes');
+      pintarLista();
+    } catch (e) {
+      cuerpo.replaceChildren(filaMensaje('No se pudieron cargar las solicitudes: ' + e.message));
+    }
+  }
+
+  function pintarLista() {
+    const q = $('#f-buscar').value.trim().toLowerCase();
+    const est = $('#f-estado').value;
+    const area = $('#f-area').value;
+    const filas = SOLICITUDES.filter((s) =>
+      (!est || s.estado === est) &&
+      (!area || s.area === area) &&
+      (!q || [s.radicado, s.solicitanteNombre, s.solicitanteCorreo, s.proyecto, s.equipos].join(' ').toLowerCase().includes(q))
+    );
+    const cuerpo = $('#tabla-cuerpo');
+    if (!filas.length) {
+      cuerpo.replaceChildren(filaMensaje(SOLICITUDES.length
+        ? 'Ninguna solicitud coincide con los filtros.'
+        : 'Todavía no hay solicitudes. Registra la primera en la pestaña Nueva solicitud.'));
+      return;
+    }
+    cuerpo.replaceChildren(...filas.map((s) => {
+      const tr = el('tr', { tabIndex: 0 }, [
+        el('td', {}, el('span', { className: 'tag', textContent: s.radicado })),
+        el('td', { textContent: fecha(s.creadaEn) }),
+        el('td', { textContent: s.area }),
+        el('td', { textContent: s.solicitanteNombre }),
+        el('td', { className: 'celda-equipos', textContent: s.equipos }),
+        el('td', { textContent: s.unidades }),
+        el('td', { textContent: s.prioridad }),
+        el('td', {}, chipEstado(s.estado)),
+      ]);
+      tr.addEventListener('click', () => abrirDetalle(s.radicado));
+      tr.addEventListener('keydown', (e) => { if (e.key === 'Enter') abrirDetalle(s.radicado); });
+      return tr;
+    }));
+  }
+  ['#f-buscar', '#f-estado', '#f-area'].forEach((id) => $(id).addEventListener('input', pintarLista));
+
+  // ---------- Detalle ----------
+  async function abrirDetalle(radicado) {
+    try {
+      actual = await api(`/api/solicitudes/${encodeURIComponent(radicado)}`);
+    } catch (e) {
+      aviso(e.message);
+      return;
+    }
+    pintarDetalle();
+    const d = $('#detalle');
+    if (!d.open) d.showModal();
+  }
+
+  function pintarDetalle() {
+    const s = actual;
+    const unidades = s.items.reduce((t, i) => t + Number(i.cantidad || 0), 0);
+    $('#det-radicado').textContent = s.radicado;
+    $('#det-estado').replaceWith(Object.assign(chipEstado(s.estado), { id: 'det-estado' }));
+    $('#det-titulo').textContent = `${unidades} ${unidades === 1 ? 'equipo' : 'equipos'} para ${s.area}`;
+    const filas = [
+      ['Solicitante', `${s.solicitanteNombre} (${s.solicitanteCorreo})`],
+      ['Proyecto', s.proyecto || 'No indicado'],
+      ['Prioridad', s.prioridad],
+      ['Se necesita', s.fechaRequerida || 'Sin fecha'],
+      ['Registrada', fecha(s.creadaEn, true)],
+      ['Uso', s.justificacion],
+    ];
+    $('#det-datos').replaceChildren(...filas.flatMap(([k, v]) => [el('dt', { textContent: k }), el('dd', { textContent: v })]));
+    $('#det-equipos').replaceChildren(...s.items.flatMap((it) => [
+      el('h4', { textContent: `${it.cantidad} × ${it.tipo}` }),
+      el('ul', {}, describirItem(it).map((l) => el('li', { textContent: l }))),
+    ]));
+    if (CONFIG.esTI) {
+      $('#det-comparacion').value = s.comparacion || '';
+      $('#det-nuevo-estado').value = s.estado;
+      $('#det-comentario').value = '';
+    }
+    $('#det-historial').replaceChildren(...[...(s.historial || [])].reverse().map((h) =>
+      el('li', {}, [
+        el('strong', { textContent: h.estado }),
+        h.comentario ? ` — ${h.comentario}` : '',
+        el('small', { textContent: `${fecha(h.fecha, true)} por ${h.por}` }),
+      ])
+    ));
+  }
+
+  $('#det-cerrar').addEventListener('click', () => $('#detalle').close());
+  $('#det-pdf').addEventListener('click', () => descargarPDF(actual.radicado));
+
+  // ---------- Acciones solo para TI ----------
+  $('#det-prompt').addEventListener('click', async () => {
+    try {
+      const { prompt } = await api(`/api/solicitudes/${encodeURIComponent(actual.radicado)}/prompt`);
+      await navigator.clipboard.writeText(prompt);
+      aviso('Prompt copiado. Pégalo en Claude o ChatGPT.');
+    } catch (e) {
+      aviso('No se pudo copiar el prompt: ' + e.message);
+    }
+  });
+
+  $('#det-guardar-comp').addEventListener('click', async () => {
+    try {
+      await api(`/api/solicitudes/${encodeURIComponent(actual.radicado)}/comparacion`, {
+        method: 'PUT', body: JSON.stringify({ texto: $('#det-comparacion').value }),
+      });
+      actual.comparacion = $('#det-comparacion').value;
+      aviso('Comparación guardada.');
+    } catch (e) { aviso(e.message); }
+  });
+
+  async function cambiarEstado(estado, comentario) {
+    await api(`/api/solicitudes/${encodeURIComponent(actual.radicado)}/estado`, {
+      method: 'PATCH', body: JSON.stringify({ estado, comentario }),
+    });
+    actual = await api(`/api/solicitudes/${encodeURIComponent(actual.radicado)}`);
+    pintarDetalle();
+    cargarLista();
+  }
+
+  $('#det-guardar-estado').addEventListener('click', async () => {
+    try {
+      await cambiarEstado($('#det-nuevo-estado').value, $('#det-comentario').value);
+      aviso('Estado actualizado.');
+    } catch (e) { aviso(e.message); }
+  });
+
+  $('#det-compras').addEventListener('click', async () => {
+    const s = actual;
+    const comparacion = (s.comparacion || '').slice(0, 1000);
+    const equipos = s.items.map((it, i) => [`${i + 1}. ${it.cantidad} x ${it.tipo}`, ...describirItem(it).map((l) => `   - ${l}`)].join('\n')).join('\n\n');
+    const cuerpo = [
+      'Hola, equipo de Compras:',
+      '',
+      `Remito la solicitud ${s.radicado} para su gestión.`,
+      '',
+      `Área: ${s.area}`,
+      `Proyecto: ${s.proyecto || 'No indicado'}`,
+      `Solicitante: ${s.solicitanteNombre} (${s.solicitanteCorreo})`,
+      `Prioridad: ${s.prioridad}`,
+      `Se necesita: ${s.fechaRequerida || 'Sin fecha definida'}`,
+      `Uso: ${s.justificacion}`,
+      '',
+      'Equipos solicitados:',
+      equipos,
+      '',
+      comparacion ? 'Comparación de opciones (resumen):\n' + comparacion + (s.comparacion.length > 1000 ? '\n[…ver PDF adjunto]' : '') : 'Sin comparación de opciones.',
+      '',
+      'Adjunto el PDF de la solicitud.',
+    ].join('\n');
+    const asunto = `Solicitud ${s.radicado}: ${s.items.map((i) => `${i.cantidad} ${i.tipo}`).join(', ')}`;
+    const para = CONFIG.comprasPara.join(',');
+    const copia = [...new Set([s.solicitanteCorreo, ...CONFIG.comprasCc])].filter((c) => !CONFIG.comprasPara.includes(c)).join(',');
+    window.location.href = `mailto:${para}?cc=${encodeURIComponent(copia)}&subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+    try {
+      if (s.estado !== 'Enviada a Compras') await cambiarEstado('Enviada a Compras', 'Enviada por correo a Compras');
+      aviso('Se abrió tu correo. Adjunta el PDF antes de enviarlo.');
+    } catch (e) { aviso(e.message); }
+  });
+
+  // ---------- Inicio ----------
+  (async function iniciar() {
+    try {
+      CONFIG = await api('/api/config');
+    } catch (e) {
+      $('#error-form').textContent = 'No se pudo conectar con el servidor: ' + e.message;
+      $('#error-form').hidden = false;
+      return;
+    }
+    llenarSelect($('#area'), CONFIG.areas, 'Elige un área');
+    llenarSelect($('#prioridad'), CONFIG.prioridades, 'Elige la prioridad');
+    llenarSelect($('#f-estado'), CONFIG.estados, 'Todos');
+    llenarSelect($('#f-area'), CONFIG.areas, 'Todas');
+    llenarSelect($('#det-nuevo-estado'), CONFIG.estados);
+    $('#solicitanteCorreo').placeholder = `tunombre@${CONFIG.dominio}`;
+
+    Object.keys(CONFIG.catalogo).forEach((tipo) => {
+      const b = el('button', { type: 'button', className: 'btn', textContent: `+ ${tipo}` });
+      b.addEventListener('click', () => agregarItem(tipo));
+      $('#botones-agregar').append(b);
+    });
+
+    const guardado = solicitanteGuardado();
+    $('#solicitanteNombre').value = guardado.nombre || '';
+    $('#solicitanteCorreo').value = CONFIG.usuario || guardado.correo || '';
+    if (CONFIG.usuario) $('#solicitanteCorreo').readOnly = true;
+
+    // Vista según el rol
+    document.querySelectorAll('.solo-ti').forEach((n) => (n.hidden = !CONFIG.esTI));
+    if (CONFIG.esTI) {
+      $('#pestana-seguimiento').textContent = 'Seguimiento';
+      $('#seg-titulo').textContent = 'Seguimiento de solicitudes';
+      $('#seg-intro').textContent = 'Todas las solicitudes de la empresa. Abre una para copiar el prompt, registrar la comparación, cambiar el estado o enviarla a Compras.';
+    } else {
+      $('#seg-intro').textContent = 'Aquí ves el estado de las solicitudes que has registrado. Haz clic en una para ver el detalle.';
+    }
+  })();
+</script>
+</body>
+</html>
