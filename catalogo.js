@@ -43,6 +43,7 @@ const sugerencia = {
 
 const CATALOGO = {
   'Computador portátil': {
+    grupo: 'Equipos de cómputo e impresión',
     campos: [
       ...camposComputador,
       { id: 'pantalla', etiqueta: 'Tamaño de pantalla', opciones: ['13 a 14 pulgadas', '15,6 pulgadas', '16 pulgadas o más'] },
@@ -58,6 +59,7 @@ const CATALOGO = {
   },
 
   'Computador de escritorio': {
+    grupo: 'Equipos de cómputo e impresión',
     campos: [
       ...camposComputador,
       { id: 'formato', etiqueta: 'Formato', opciones: ['Torre', 'Mini PC (compacto)', 'Todo en uno (pantalla integrada)'] },
@@ -74,6 +76,7 @@ const CATALOGO = {
   },
 
   'Impresora': {
+    grupo: 'Equipos de cómputo e impresión',
     campos: [
       { id: 'tecnologia', etiqueta: 'Tipo de impresora', opciones: ['Láser blanco y negro', 'Láser a color', 'De tinta a color', 'Multifuncional (imprime, copia y escanea)'] },
       { id: 'volumen', etiqueta: 'Páginas al mes (aprox.)', opciones: ['Hasta 1.000', 'De 1.000 a 5.000', 'Más de 5.000'] },
@@ -85,6 +88,7 @@ const CATALOGO = {
   },
 
   'Escáner': {
+    grupo: 'Equipos de cómputo e impresión',
     campos: [
       { id: 'tipoEscaner', etiqueta: 'Tipo de escáner', opciones: ['Con alimentador automático de hojas', 'De cama plana (libros, documentos frágiles)', 'Portátil', 'De producción (alto volumen)'] },
       { id: 'volumen', etiqueta: 'Páginas al día (aprox.)', opciones: ['Hasta 500', 'De 500 a 3.000', 'Más de 3.000'] },
@@ -94,7 +98,36 @@ const CATALOGO = {
     ],
     accesorios: ['Software con reconocimiento de texto (OCR)', 'Kit de rodillos de repuesto'],
   },
+  // ---------- Puntos de autoservicio ----------
+  'Kiosko': {
+    grupo: 'Puntos de autoservicio',
+    campos: [
+      { id: 'uso', etiqueta: 'Uso principal', opciones: ['Asignación de turnos o citas', 'Consulta de información', 'Radicación de documentos o trámites', 'Pagos', 'Impresión de documentos o certificados'] },
+      { id: 'formato', etiqueta: 'Formato', opciones: ['De piso', 'De mesa o mostrador', 'De pared'] },
+      { id: 'pantalla', etiqueta: 'Pantalla táctil', opciones: ['15 a 19 pulgadas', '21 a 24 pulgadas', '27 pulgadas o más'] },
+      { id: 'ubicacion', etiqueta: 'Ubicación', opciones: ['Interior', 'Exterior (resistente a intemperie)'] },
+      { id: 'so', etiqueta: 'Sistema operativo', opciones: ['Windows 11 IoT', 'Android', 'Linux', 'Lo define el proveedor'] },
+      { id: 'software', etiqueta: 'Software del kiosko', opciones: ['Ya existe (de PGD o del cliente)', 'Se requiere desarrollo o licencia'] },
+      { id: 'conexion', etiqueta: 'Conexión', opciones: ['Red (cable)', 'Wi-Fi', 'Datos móviles (4G/5G)'] },
+    ],
+    accesorios: ['Impresora térmica de tiquetes', 'Lector de código de barras o QR', 'Lector de cédula o documento', 'Datáfono para pagos', 'Cámara', 'Parlantes', 'Diseño accesible (altura para silla de ruedas)'],
+  },
+
+  'Tótem': {
+    grupo: 'Puntos de autoservicio',
+    campos: [
+      { id: 'uso', etiqueta: 'Uso principal', opciones: ['Señalización o publicidad digital', 'Llamado de turnos (turnero)', 'Directorio o información interactiva'] },
+      { id: 'tactil', etiqueta: 'Tipo de pantalla', opciones: ['Táctil (interactiva)', 'No táctil (solo visualización)'] },
+      { id: 'pantalla', etiqueta: 'Tamaño de pantalla', opciones: ['32 pulgadas', '43 pulgadas', '49 a 55 pulgadas', '65 pulgadas o más'] },
+      { id: 'orientacion', etiqueta: 'Orientación', opciones: ['Vertical', 'Horizontal'] },
+      { id: 'ubicacion', etiqueta: 'Ubicación', opciones: ['Interior', 'Exterior (resistente a intemperie y alto brillo)'] },
+      { id: 'contenido', etiqueta: 'Manejo del contenido', opciones: ['Software de gestión de contenidos (remoto)', 'Carga manual por USB', 'Lo define el proveedor'] },
+      { id: 'conexion', etiqueta: 'Conexión', opciones: ['Red (cable)', 'Wi-Fi', 'Datos móviles (4G/5G)'] },
+    ],
+    accesorios: ['Parlantes', 'Cámara', 'Impresora térmica de tiquetes', 'Lector de código QR', 'Anclaje al piso o base antivuelco'],
+  },
 };
+
 
 // Convierte un equipo pedido en líneas de texto legibles ("Memoria RAM: 16 GB")
 function describirItem(item) {

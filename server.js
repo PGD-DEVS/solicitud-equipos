@@ -23,6 +23,10 @@ const TI_ADMINS = lista(process.env.TI_ADMINS || '');
 // Solo para pruebas en tu computador: simula el usuario que inició sesión.
 // En Cloud Run se ignora y se usa el inicio de sesión de Google.
 const EN_CLOUD_RUN = Boolean(process.env.K_SERVICE);
+
+// MODO PRUEBAS: la persona escribe su correo al entrar (sin verificar con Google).
+// Solo para el enlace de pruebas. En producción NO se activa: se usa el inicio de sesión de Google.
+const MODO_PRUEBAS = /^(1|true|si|sí)$/i.test(process.env.MODO_PRUEBAS || '');
 const DEV_USER = EN_CLOUD_RUN ? '' : (process.env.DEV_USER || '').trim().toLowerCase();
 
 const AREAS = ['Administrativa', 'Comercial', 'Financiera', 'Gerencia', 'Operaciones', 'Talento Humano', 'TI'];
@@ -40,6 +44,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
   const iap = req.get('x-goog-authenticated-user-email');
   req.usuario = iap ? iap.replace(/^accounts\.google\.com:/, '').toLowerCase() : DEV_USER || null;
+  if (!req.usuario && MODO_PRUEBAS) {
+    const correo = (req.get('x-usuario-prueba') || '').trim().toLowerCase();
+    if (/^[a-z0-9._%+-]+@/.test(correo) && correo.endsWith('@' + DOMINIO)) req.usuario = correo;
+  }
   req.esTI = Boolean(req.usuario && TI_ADMINS.includes(req.usuario));
   next();
 });
@@ -179,6 +187,7 @@ app.get('/api/config', (req, res) => {
     dominio: DOMINIO,
     usuario: req.usuario,
     esTI: req.esTI,
+    modoPruebas: MODO_PRUEBAS,
   });
 });
 
@@ -310,11 +319,13 @@ app.get('/api/solicitudes/:id/pdf', async (req, res, next) => {
     const doc = new PDFDocument({ size: 'LETTER', margin: 56 });
     doc.pipe(res);
 
-    const gris = '#586377';
-    const tinta = '#18202E';
+    const gris = '#5B6781';
+    const tinta = '#264574';
+    doc.image(path.join(__dirname, 'public', 'logo-pgd.png'), doc.page.width - 56 - 80, 40, { width: 80 });
     doc.font('Helvetica-Bold').fontSize(20).fillColor(tinta).text('Solicitud de equipos');
     doc.moveDown(0.2).font('Helvetica').fontSize(12).fillColor(gris).text(`Radicado ${s.radicado}    Estado: ${s.estado}`);
-    doc.moveDown(1);
+    doc.moveTo(56, doc.y + 14).lineTo(doc.page.width - 56, doc.y + 14).lineWidth(2).strokeColor('#ECBF1E').stroke();
+    doc.moveDown(1.6);
 
     const campo = (etiqueta, valor) => {
       doc.font('Helvetica-Bold').fontSize(10).fillColor(gris).text(etiqueta);
@@ -368,5 +379,6 @@ app.listen(PORT, () => {
   console.log(`Solicitud de equipos lista en http://localhost:${PORT}`);
   console.log(`Proyecto: ${PROJECT_ID} | Base de datos: ${DATABASE_ID}`);
   console.log(`Compras (para): ${COMPRAS_PARA.join(', ')} | En copia: ${COMPRAS_CC.join(', ') || '(solo el solicitante)'}`);
+  if (MODO_PRUEBAS) console.log('MODO PRUEBAS ACTIVO: los usuarios se identifican escribiendo su correo.');
   console.log(`Usuario de prueba: ${DEV_USER || '(ninguno)'} | Equipo de TI: ${TI_ADMINS.join(', ') || '(nadie configurado)'}`);
 });

@@ -4,84 +4,119 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Solicitud de equipos | PGD</title>
+<link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --papel: #EEF1F5;
+    --papel: #F4F6FA;
     --blanco: #FFFFFF;
-    --tinta: #18202E;
-    --gris: #586377;
-    --linea: #CDD4DE;
-    --etiqueta: #F4C20D;
-    --azul: #1F4FB5;
-    --azul-osc: #173D8C;
+    --tinta: #1B2B4B;
+    --gris: #5B6781;
+    --linea: #DFE4EE;
+    --etiqueta: #ECBF1E;
+    --amarillo: #ECBF1E;
+    --amarillo-osc: #D4A911;
+    --navy: #264574;
+    --azul: #1F3B8F;
+    --azul-osc: #172C6E;
+    --cian: #2CC3EA;
     --error: #B42318;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
     background: var(--papel);
     color: var(--tinta);
     font-size: 16px;
     line-height: 1.5;
   }
-  .barra {
-    background: var(--tinta);
-    color: #fff;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0 1rem;
-    padding: 0 max(1rem, calc((100vw - 1040px) / 2));
+
+  /* Encabezado blanco con logo y menú tipo píldora (como pgd.com.co) */
+  .barra { background: var(--blanco); border-bottom: 1px solid var(--linea); }
+  .barra-in {
+    max-width: 1040px; margin: 0 auto; padding: .9rem 1rem;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem 1rem;
   }
-  .marca { display: flex; align-items: center; gap: .6rem; padding: 1rem 0; font-weight: 600; }
-  .logo {
-    background: var(--etiqueta); color: var(--tinta);
-    font-family: "IBM Plex Sans Condensed", sans-serif; font-weight: 700;
-    padding: .05rem .45rem; border-radius: 3px;
+  .marca { display: flex; align-items: center; gap: .85rem; text-decoration: none; color: var(--navy); }
+  .logo-caja {
+    background: #fff; border-radius: 999px; padding: .35rem 1rem;
+    box-shadow: 0 2px 10px rgba(27, 43, 75, .12); display: flex; align-items: center;
   }
-  .pestanas { display: flex; gap: .25rem; }
+  .logo-caja img { height: 38px; width: auto; display: block; }
+  .marca-texto { font-weight: 700; font-size: 1.05rem; letter-spacing: -.01em; }
+  .pestanas {
+    display: flex; gap: .25rem; background: var(--tinta); padding: .3rem; border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(27, 43, 75, .25);
+  }
   .pestana {
-    background: none; border: 0; color: #C9D1DE; font: inherit;
-    padding: .8rem 1.1rem; border-radius: 6px 6px 0 0; cursor: pointer;
+    background: none; border: 0; color: #fff; font: inherit; font-weight: 600; font-size: .92rem;
+    padding: .5rem 1.1rem; border-radius: 999px; cursor: pointer;
   }
-  .pestana:hover { color: #fff; }
-  .pestana[aria-selected="true"] { background: var(--papel); color: var(--tinta); font-weight: 600; }
+  .pestana:hover { background: rgba(255, 255, 255, .1); }
+  .pestana[aria-selected="true"] { background: var(--amarillo); color: var(--tinta); }
+  .pestana[aria-selected="true"]::before { content: "→ "; }
+
+  /* Banda azul con el título de cada vista */
+  .hero {
+    color: #fff; overflow: hidden;
+    background: linear-gradient(100deg, #172B6B 0%, #0E1D45 48%, #0A1830 72%, #06101C 100%);
+  }
+  .hero-in {
+    max-width: 1040px; margin: 0 auto; padding: 0 1rem;
+    display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 1.5rem; align-items: end;
+  }
+  .hero-texto { padding: 2.5rem 0 2.75rem; }
+  .hero-ceja { color: var(--amarillo); font-size: .78rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; margin: 0 0 .6rem; }
+  .hero-mascota { display: block; width: 320px; height: auto; align-self: end; }
+  .hero h1 { font-size: 2.3rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.15; margin: 0 0 .75rem; }
+  .hero h1 .destacado { color: var(--cian); }
+  .hero p { color: #DDE4F7; max-width: 58ch; margin: 0; }
+  .hero p.hero-ceja { color: var(--amarillo); }
+  .hero-chips { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin-top: 1.4rem; font-size: .88rem; color: #E6ECFA; }
+  .hero-chips span { display: inline-flex; align-items: center; gap: .5rem; }
+  .hero-chips span::before { content: ""; width: .9rem; height: .9rem; border-radius: 50%; background: rgba(255, 255, 255, .25); box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .12); }
 
   main { max-width: 1040px; margin: 0 auto; padding: 2rem 1rem 4rem; }
-  h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 .5rem; }
+
+  /* Barra del modo pruebas */
+  .pruebas { background: #FFF4CC; border-bottom: 1px solid #F0D98A; color: var(--tinta); font-size: .92rem; }
+  .pruebas-in { max-width: 1040px; margin: 0 auto; padding: .6rem 1rem; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; }
+  .pruebas strong { color: var(--navy); }
+  .pruebas input { width: 18rem; max-width: 100%; padding: .4rem .6rem; }
+  .pruebas .btn { padding: .4rem .9rem; }
   h2 { font-size: 1.35rem; line-height: 1.3; margin: .75rem 0 1rem; }
+  h2, h3 { color: var(--navy); }
   h3 { font-size: 1.05rem; margin: 0 0 .5rem; }
   .intro { color: var(--gris); max-width: 62ch; margin: 0 0 2rem; }
 
   fieldset {
-    border: 1px solid var(--linea); background: var(--blanco); border-radius: 6px;
-    padding: 1.25rem 1.5rem 1.5rem; margin: 0 0 1.25rem; min-width: 0;
+    border: 1px solid var(--linea); background: var(--blanco); border-radius: 14px;
+    padding: 1.4rem 1.6rem 1.6rem; margin: 0 0 1.4rem; min-width: 0; box-shadow: 0 1px 3px rgba(27, 43, 75, .06);
   }
-  legend { font-weight: 600; font-size: 1.05rem; padding: 0 .4rem; }
+  legend { font-weight: 700; font-size: 1.05rem; padding: 0 .5rem; color: var(--navy); }
   .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.25rem; }
   .completo { grid-column: 1 / -1; }
   label { display: block; font-weight: 500; font-size: .92rem; margin-bottom: .3rem; }
   .ayuda { color: var(--gris); font-size: .86rem; margin: .25rem 0 0; }
   input, select, textarea {
     width: 100%; font: inherit; color: var(--tinta); background: #fff;
-    padding: .6rem .7rem; border: 1px solid var(--linea); border-radius: 4px;
+    padding: .6rem .75rem; border: 1px solid #CBD3E1; border-radius: 8px;
   }
   textarea { min-height: 7rem; resize: vertical; }
-  :focus-visible { outline: 3px solid var(--etiqueta); outline-offset: 2px; }
+  :focus-visible { outline: 3px solid var(--amarillo); outline-offset: 2px; }
+  input:focus, select:focus, textarea:focus { border-color: var(--azul); }
 
   .btn {
     font: inherit; font-weight: 600; cursor: pointer;
-    border: 1px solid var(--tinta); background: #fff; color: var(--tinta);
-    padding: .6rem 1.1rem; border-radius: 4px;
+    border: 1px solid var(--azul); background: #fff; color: var(--azul);
+    padding: .6rem 1.15rem; border-radius: 8px;
   }
-  .btn:hover { background: #F6F7F9; }
-  .btn.primario { background: var(--azul); border-color: var(--azul); color: #fff; }
-  .btn.primario:hover { background: var(--azul-osc); }
+  .btn:hover { background: #EEF2FB; }
+  .btn.primario { background: var(--amarillo); border-color: var(--amarillo); color: var(--tinta); box-shadow: 0 4px 14px rgba(236, 191, 30, .35); }
+  .btn.primario:hover { background: var(--amarillo-osc); border-color: var(--amarillo-osc); }
   .btn:disabled { opacity: .6; cursor: wait; }
   .acciones { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-top: 1rem; }
   .error { color: var(--error); font-weight: 500; }
@@ -90,7 +125,7 @@
   .tag {
     display: inline-flex; align-items: center; gap: .55rem;
     background: var(--etiqueta); color: var(--tinta);
-    font-family: "IBM Plex Sans Condensed", sans-serif; font-weight: 700;
+    font-weight: 800; letter-spacing: -.01em;
     font-variant-numeric: tabular-nums; white-space: nowrap;
     padding: .25rem .75rem .25rem .55rem; border-radius: 3px 12px 12px 3px;
   }
@@ -101,17 +136,17 @@
   .tag.grande { font-size: 2.6rem; padding: .5rem 1.6rem .5rem 1.1rem; border-radius: 4px 22px 22px 4px; }
   .tag.grande::before { width: 1rem; height: 1rem; }
 
-  .confirmacion { background: var(--blanco); border: 1px solid var(--linea); border-radius: 6px; padding: 2rem; }
+  .confirmacion { background: var(--blanco); border: 1px solid var(--linea); border-radius: 14px; padding: 2rem; box-shadow: 0 1px 3px rgba(27, 43, 75, .06); }
   .confirmacion .tag { animation: pegar .45s cubic-bezier(.2, .9, .3, 1.3); }
   @keyframes pegar { from { transform: rotate(-6deg) scale(1.15); opacity: 0; } to { transform: none; opacity: 1; } }
 
   .filtros { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: .75rem; margin-bottom: 1rem; }
-  .tabla-caja { overflow-x: auto; background: var(--blanco); border: 1px solid var(--linea); border-radius: 6px; }
+  .tabla-caja { overflow-x: auto; background: var(--blanco); border: 1px solid var(--linea); border-radius: 14px; }
   table { width: 100%; border-collapse: collapse; font-size: .93rem; }
   th, td { text-align: left; padding: .7rem .9rem; border-bottom: 1px solid var(--linea); white-space: nowrap; }
-  th { font-weight: 600; color: var(--gris); background: #F7F8FA; }
+  th { font-weight: 600; color: var(--navy); background: #F1F4FA; }
   tbody tr { cursor: pointer; }
-  tbody tr:hover, tbody tr:focus-visible { background: #FFF9E0; }
+  tbody tr:hover, tbody tr:focus-visible { background: #FFF8DC; }
   .vacio { padding: 2.5rem 1rem; text-align: center; color: var(--gris); white-space: normal; }
 
   .estado { display: inline-block; padding: .1rem .6rem; border-radius: 999px; font-size: .82rem; font-weight: 600; background: #E4E8EE; }
@@ -123,9 +158,9 @@
 
   dialog {
     width: min(760px, calc(100vw - 2rem)); max-height: calc(100vh - 2rem);
-    border: 0; border-radius: 8px; padding: 1.75rem; color: var(--tinta);
+    border: 0; border-radius: 16px; padding: 1.75rem; color: var(--tinta);
   }
-  dialog::backdrop { background: rgba(24, 32, 46, .55); }
+  dialog::backdrop { background: rgba(27, 46, 126, .55); }
   .det-cabeza { display: flex; align-items: center; gap: .75rem; }
   .cerrar { margin-left: auto; background: none; border: 0; font-size: 1.8rem; line-height: 1; cursor: pointer; color: var(--gris); }
   .datos { display: grid; grid-template-columns: max-content 1fr; gap: .4rem 1.25rem; margin: 0 0 1rem; }
@@ -139,25 +174,73 @@
   .aviso {
     position: fixed; left: 50%; bottom: 1.5rem; transform: translate(-50%, 150%);
     background: var(--tinta); color: #fff; padding: .75rem 1.2rem; border-radius: 6px;
-    transition: transform .25s ease; max-width: calc(100vw - 2rem); z-index: 10;
+    transition: transform .25s ease, opacity .25s ease; max-width: calc(100vw - 2rem); z-index: 10;
+    opacity: 0; pointer-events: none;
   }
-  .aviso.visible { transform: translate(-50%, 0); }
+  .aviso.visible { transform: translate(-50%, 0); opacity: 1; }
+
+
+  /* Guía de uso */
+  .hero-link { margin-top: 1.2rem; background: none; border: 0; padding: 0; color: #fff; font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .hero-link:hover { color: var(--amarillo); }
+  .segmento { display: inline-flex; background: #E4E9F4; border-radius: 999px; padding: .25rem; margin-bottom: 1.75rem; }
+  .segmento button { border: 0; background: none; font: inherit; font-weight: 600; color: var(--navy); padding: .55rem 1.2rem; border-radius: 999px; cursor: pointer; }
+  .segmento button[aria-pressed="true"] { background: var(--blanco); box-shadow: 0 1px 4px rgba(27, 43, 75, .18); }
+  .guia h2 { font-size: 1.4rem; margin: 2.25rem 0 .4rem; }
+  .guia h2:first-child { margin-top: 0; }
+  .guia .lead { color: var(--gris); margin: 0 0 1.25rem; max-width: 65ch; }
+  .flujo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; counter-reset: flujo; }
+  .flujo > div { position: relative; background: var(--blanco); border: 1px solid var(--linea); border-radius: 14px; padding: 1.25rem 1.25rem 1.1rem; box-shadow: 0 1px 3px rgba(27, 43, 75, .06); }
+  .flujo > div::before {
+    counter-increment: flujo; content: counter(flujo);
+    display: inline-grid; place-items: center; width: 2.1rem; height: 2.1rem; border-radius: 50%;
+    background: var(--amarillo); color: var(--tinta); font-weight: 800; margin-bottom: .6rem;
+  }
+  .flujo > div:not(:last-child)::after { content: "→"; position: absolute; right: -.95rem; top: 1.55rem; color: var(--azul); font-weight: 800; font-size: 1.2rem; }
+  .flujo h3 { margin: 0 0 .3rem; }
+  .flujo p { margin: 0; color: var(--gris); font-size: .93rem; }
+  .pasos { list-style: none; padding: 0; margin: 0; counter-reset: paso; display: grid; gap: .75rem; }
+  .pasos > li {
+    counter-increment: paso; position: relative; background: var(--blanco); border: 1px solid var(--linea);
+    border-radius: 12px; padding: 1rem 1.25rem 1rem 3.6rem;
+  }
+  .pasos > li::before {
+    content: counter(paso); position: absolute; left: 1.1rem; top: 1rem; width: 1.75rem; height: 1.75rem;
+    border-radius: 50%; background: var(--azul); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: .9rem;
+  }
+  .pasos strong.titulo { display: block; color: var(--navy); margin-bottom: .15rem; }
+  .pasos ul { margin: .4rem 0 0; padding-left: 1.1rem; color: var(--tinta); font-size: .93rem; }
+  .pasos p { margin: 0; font-size: .95rem; }
+  .nota { background: #EAF6FC; border-left: 4px solid var(--cian); border-radius: 8px; padding: .9rem 1.1rem; margin-top: 1.25rem; font-size: .95rem; }
+  .faq details { background: var(--blanco); border: 1px solid var(--linea); border-radius: 12px; padding: .85rem 1.1rem; margin-bottom: .6rem; }
+  .faq summary { font-weight: 600; color: var(--navy); cursor: pointer; }
+  .faq details p { margin: .6rem 0 0; color: var(--tinta); font-size: .95rem; }
 
   @media (max-width: 680px) {
     .grid, .filtros { grid-template-columns: 1fr; }
-    h1 { font-size: 1.6rem; }
+    .hero h1 { font-size: 1.7rem; }
+    .hero-in { grid-template-columns: 1fr; }
+    .hero-mascota { display: none; }
+    .marca-texto { display: none; }
     .tag.grande { font-size: 1.9rem; }
     .datos { grid-template-columns: 1fr; }
     .datos dd { margin-bottom: .5rem; }
+    .flujo { grid-template-columns: 1fr; }
+    .flujo > div:not(:last-child)::after { content: "↓"; right: 1.25rem; top: auto; bottom: -1.2rem; }
+    .barra-in > .pestanas { width: 100%; justify-content: space-between; }
+    .pestana { white-space: nowrap; padding: .5rem .6rem; font-size: .82rem; }
+    .pestana[aria-selected="true"]::before { content: ""; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before { animation: none !important; transition: none !important; }
   }
 
   /* Equipos dentro de la solicitud */
-  .agregar { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .75rem; }
-  .agregar .btn { border-style: dashed; }
-  .item { border: 1px solid var(--linea); border-left: 6px solid var(--etiqueta); border-radius: 6px; padding: 1rem 1.25rem 1.25rem; margin-top: 1rem; background: #FCFCFD; }
+  .agregar { margin-top: .75rem; display: grid; gap: 1rem; }
+  .grupo-equipos h4 { margin: 0 0 .5rem; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gris); }
+  .grupo-equipos .fila { display: flex; flex-wrap: wrap; gap: .6rem; }
+  .agregar .btn { border-style: dashed; border-radius: 999px; }
+  .item { border: 1px solid var(--linea); border-left: 6px solid var(--amarillo); border-radius: 12px; padding: 1rem 1.25rem 1.25rem; margin-top: 1rem; background: #FCFCFD; }
   .item-cabeza { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 1rem; }
   .item-cabeza h3 { margin: 0; font-size: 1.1rem; }
   .item-cabeza .cantidad { display: flex; align-items: center; gap: .4rem; margin-left: auto; }
@@ -177,19 +260,40 @@
 <body>
 
 <header class="barra">
-  <div class="marca"><span class="logo">PGD</span> Solicitud de equipos</div>
-  <nav class="pestanas" role="tablist">
-    <button class="pestana" role="tab" aria-selected="true" data-vista="nueva">Nueva solicitud</button>
-    <button class="pestana" role="tab" aria-selected="false" data-vista="seguimiento" id="pestana-seguimiento">Mis solicitudes</button>
-  </nav>
+  <div class="barra-in">
+    <a class="marca" href="/">
+      <span class="logo-caja"><img src="/logo-pgd.png" alt="PGD"></span>
+      <span class="marca-texto">Solicitud de equipos</span>
+    </a>
+    <nav class="pestanas" role="tablist">
+      <button class="pestana" role="tab" aria-selected="true" data-vista="nueva">Nueva solicitud</button>
+      <button class="pestana" role="tab" aria-selected="false" data-vista="seguimiento" id="pestana-seguimiento">Mis solicitudes</button>
+      <button class="pestana" role="tab" aria-selected="false" data-vista="ayuda">Guía de uso</button>
+    </nav>
+  </div>
 </header>
+
+<div class="pruebas" id="barra-pruebas" hidden>
+  <div class="pruebas-in" id="pruebas-contenido"></div>
+</div>
+
+<section class="hero">
+  <div class="hero-in">
+    <div class="hero-texto">
+      <p class="hero-ceja">PGD · TI · Gestión de equipos</p>
+      <h1 id="hero-titulo"></h1>
+      <p id="hero-intro"></p>
+      <div class="hero-chips"><span>Todo en un solo pedido</span><span>Seguimiento en línea</span><span>Directo a Compras</span></div>
+      <button type="button" class="hero-link" id="hero-ayuda">¿Primera vez? Mira cómo funciona →</button>
+    </div>
+    <img class="hero-mascota" src="/abeja-pgd.webp" alt="Abeja de PGD con casco de técnico" width="465" height="477">
+  </div>
+</section>
 
 <main>
   <!-- Vista: nueva solicitud -->
   <section id="vista-nueva">
     <div id="bloque-form">
-      <h1>Pide equipos</h1>
-      <p class="intro">Agrega en una sola solicitud todos los equipos que necesitas. TI revisa el pedido, compara opciones y lo envía a Compras. Recibirás un número de radicado para hacerle seguimiento.</p>
 
       <form id="form-solicitud" novalidate>
         <fieldset>
@@ -216,7 +320,7 @@
 
         <fieldset>
           <legend>Equipos que necesitas</legend>
-          <p class="ayuda">Elige el tipo de equipo para agregarlo. Puedes agregar varios, por ejemplo 3 portátiles y 1 impresora.</p>
+          <p class="ayuda">Elige el tipo de equipo para agregarlo. Puedes agregar varios, por ejemplo 3 portátiles, 1 impresora y 1 kiosko.</p>
           <div id="items"></div>
           <p class="sin-items" id="sin-items">Todavía no has agregado equipos.</p>
           <div class="agregar" id="botones-agregar"></div>
@@ -261,8 +365,6 @@
 
   <!-- Vista: seguimiento -->
   <section id="vista-seguimiento" hidden>
-    <h1 id="seg-titulo">Mis solicitudes</h1>
-    <p class="intro" id="seg-intro"></p>
     <div class="filtros">
       <div>
         <label for="f-buscar">Buscar</label>
@@ -284,6 +386,94 @@
         </thead>
         <tbody id="tabla-cuerpo"></tbody>
       </table>
+    </div>
+  </section>
+
+  <!-- Vista: guía de uso -->
+  <section id="vista-ayuda" class="guia" hidden>
+    <div class="segmento" id="guia-segmento" role="group" aria-label="Tipo de guía" hidden>
+      <button type="button" data-guia="solicitante" aria-pressed="true">Registrar solicitudes</button>
+      <button type="button" data-guia="ti" aria-pressed="false">Gestión TI</button>
+    </div>
+
+    <!-- Guía para quien registra -->
+    <div id="guia-solicitante">
+      <h2>Así llega tu pedido a Compras</h2>
+      <p class="lead">Tú registras lo que necesitas una sola vez. TI lo revisa y Compras lo recibe con todo el detalle. Tú sigues el avance desde aquí.</p>
+      <div class="flujo">
+        <div><h3>Registras tu pedido</h3><p>Agregas todos los equipos en una sola solicitud y recibes un número de radicado.</p></div>
+        <div><h3>TI lo revisa</h3><p>Valida las especificaciones y compara opciones del mercado.</p></div>
+        <div><h3>Compras lo gestiona</h3><p>Recibe el pedido completo. Tú ves cada cambio de estado en línea.</p></div>
+      </div>
+
+      <h2>Registra una solicitud</h2>
+      <p class="lead">Una solicitud puede tener varios equipos, por ejemplo 3 portátiles y 1 impresora.</p>
+      <ol class="pasos">
+        <li><strong class="titulo">Entra a Nueva solicitud</strong><p>Escribe tu nombre y elige tu área. Si el pedido es para un proyecto o cliente, escríbelo en Proyecto o centro de costo.</p></li>
+        <li><strong class="titulo">Agrega los equipos</strong><p>Elige el tipo de equipo. Están en dos grupos: <b>Equipos de cómputo e impresión</b> (portátil, escritorio, impresora y escáner) y <b>Puntos de autoservicio</b> (kiosko y tótem). Escribe la cantidad y completa sus opciones.</p>
+          <ul>
+            <li><b>Computadores:</b> elige primero el perfil de uso y la aplicación te sugiere la configuración. Puedes cambiarla.</li>
+            <li><b>Impresoras y escáneres:</b> tipo, volumen de páginas, tamaño de papel, doble cara y conexión.</li>
+            <li><b>Kioskos:</b> uso (turnos, consultas, radicación, pagos o impresión), formato, pantalla táctil, ubicación y software.</li>
+            <li><b>Tótems:</b> uso (señalización, turnero o directorio), tipo y tamaño de pantalla, orientación y manejo del contenido.</li>
+            <li><b>Accesorios y observaciones:</b> opcionales, para teclado, mouse, software especial o lugar de instalación.</li>
+          </ul>
+        </li>
+        <li><strong class="titulo">Cuenta para qué los necesitas</strong><p>Elige la prioridad, la fecha en que los necesitas (opcional) y explica el uso.</p></li>
+        <li><strong class="titulo">Registra y guarda tu radicado</strong><p>Haz clic en Registrar solicitud. Guarda el número de la etiqueta amarilla, por ejemplo SOL-2026-0004, y descarga el PDF si lo necesitas.</p></li>
+      </ol>
+
+      <h2>Consulta el estado</h2>
+      <p class="lead">En Mis solicitudes ves solo lo que tú registraste. Haz clic en una fila para ver los equipos, el PDF y el historial con cada cambio de estado.</p>
+      <div class="tabla-caja"><table>
+        <thead><tr><th>Estado</th><th>Qué significa</th></tr></thead>
+        <tbody>
+          <tr><td><span class="estado">Recibida</span></td><td>Tu solicitud quedó registrada y espera revisión de TI.</td></tr>
+          <tr><td><span class="estado en-cotizacion">En cotización</span></td><td>TI está revisando y comparando opciones.</td></tr>
+          <tr><td><span class="estado enviada-a-compras">Enviada a Compras</span></td><td>El pedido ya está en manos de Compras.</td></tr>
+          <tr><td><span class="estado aprobada">Aprobada</span></td><td>Compras aprobó la compra.</td></tr>
+          <tr><td><span class="estado rechazada">Rechazada</span></td><td>La compra no se aprobó. El historial explica por qué.</td></tr>
+          <tr><td><span class="estado entregada">Entregada</span></td><td>El equipo ya fue entregado.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2>Preguntas frecuentes</h2>
+      <div class="faq">
+        <details><summary>¿Cuál es la diferencia entre un kiosko y un tótem?</summary><p>El kiosko es un punto donde la persona hace un trámite: pide un turno, consulta, radica o paga. El tótem es una pantalla grande de pie, sobre todo para mostrar información o llamar turnos.</p></details>
+        <details><summary>¿Puedo pedir equipos para otra persona?</summary><p>Sí. Regístrala tú y explica en el uso a quién van dirigidos. La solicitud queda a tu nombre.</p></details>
+        <details><summary>No sé qué especificaciones elegir</summary><p>Elige el perfil de uso más parecido y deja la configuración sugerida. TI la revisa antes de enviarla a Compras.</p></details>
+        <details><summary>Necesito un equipo que no está en la lista</summary><p>Por ahora se pueden pedir computadores portátiles, de escritorio, impresoras, escáneres, kioskos y tótems. Para otros equipos, escríbele a TI.</p></details>
+        <details><summary>Me equivoqué en una solicitud ya registrada</summary><p>No se puede editar. Escríbele a TI con el radicado; TI la marca como Rechazada con un comentario y tú registras una nueva.</p></details>
+      </div>
+    </div>
+
+    <!-- Guía para TI -->
+    <div id="guia-ti" hidden>
+      <h2>De la solicitud a Compras en 5 pasos</h2>
+      <p class="lead">En Seguimiento ves todas las solicitudes de la empresa. Filtra por estado Recibida para ver las pendientes.</p>
+      <ol class="pasos">
+        <li><strong class="titulo">Revisa la solicitud</strong><p>Abre la solicitud y verifica que los equipos y especificaciones tengan sentido para el uso descrito.</p></li>
+        <li><strong class="titulo">Márcala En cotización</strong><p>En Cambiar estado elige En cotización, agrega un comentario si aplica y haz clic en Actualizar estado. El solicitante lo ve en su historial.</p></li>
+        <li><strong class="titulo">Genera la comparación</strong><p>Haz clic en Copiar prompt de comparación y pégalo en Claude o ChatGPT. La IA propone 3 opciones por equipo, con precios aproximados en pesos y una recomendación.</p></li>
+        <li><strong class="titulo">Guarda la comparación</strong><p>Copia la respuesta con el botón de copiar de la IA, no seleccionando el texto, para no perder los saltos de línea. Pégala en Comparación de opciones y haz clic en Guardar comparación.</p></li>
+        <li><strong class="titulo">Envía a Compras</strong><p>Descarga el PDF, que incluye la comparación. Luego haz clic en Enviar a Compras: se abre tu correo con destinatarios, copia y detalle listos. Adjunta el PDF y envía. El estado cambia solo a Enviada a Compras.</p></li>
+      </ol>
+      <p class="nota">El correo va para analista.compras@pgd.com.co y deisy.rodriguez@pgd.com.co, con copia al solicitante y a javier.mora@pgd.com.co.</p>
+
+      <h2>Cierra el ciclo</h2>
+      <p class="lead">Cuando Compras responda, actualiza el estado con un comentario que explique la decisión.</p>
+      <div class="tabla-caja"><table>
+        <thead><tr><th>Estado</th><th>Cuándo usarlo</th><th>Quién lo pone</th></tr></thead>
+        <tbody>
+          <tr><td><span class="estado">Recibida</span></td><td>Al registrar la solicitud</td><td>La aplicación</td></tr>
+          <tr><td><span class="estado en-cotizacion">En cotización</span></td><td>Al empezar la revisión</td><td>TI</td></tr>
+          <tr><td><span class="estado enviada-a-compras">Enviada a Compras</span></td><td>Al usar Enviar a Compras</td><td>La aplicación</td></tr>
+          <tr><td><span class="estado aprobada">Aprobada</span></td><td>Compras aprobó la compra</td><td>TI</td></tr>
+          <tr><td><span class="estado rechazada">Rechazada</span></td><td>No se aprobó o hay que corregirla</td><td>TI</td></tr>
+          <tr><td><span class="estado entregada">Entregada</span></td><td>El equipo llegó al solicitante</td><td>TI</td></tr>
+        </tbody>
+      </table></div>
+      <p class="nota">La comparación de la IA es una referencia de precios de mercado, no una cotización. Las cotizaciones de proveedores las gestiona Compras.</p>
     </div>
   </section>
 </main>
@@ -343,8 +533,43 @@
   let contadorItems = 0;
 
   // ---------- Utilidades ----------
+  // Modo pruebas: correo con el que la persona dice entrar (se guarda en este navegador)
+  function leerCorreoPrueba() {
+    try { return localStorage.getItem('pgd-correo-prueba') || ''; } catch { return ''; }
+  }
+  function guardarCorreoPrueba(correo) {
+    try { correo ? localStorage.setItem('pgd-correo-prueba', correo) : localStorage.removeItem('pgd-correo-prueba'); } catch {}
+    location.reload();
+  }
+  function pintarBarraPruebas() {
+    const caja = $('#pruebas-contenido');
+    if (CONFIG.usuario) {
+      const cambiar = el('button', { type: 'button', className: 'btn', textContent: 'Cambiar de usuario' });
+      cambiar.addEventListener('click', () => guardarCorreoPrueba(''));
+      caja.replaceChildren(
+        el('span', {}, [el('strong', { textContent: 'Versión de pruebas.' }), ` Entraste como ${CONFIG.usuario}${CONFIG.esTI ? ' (TI)' : ''}.`]),
+        cambiar
+      );
+    } else {
+      const correo = el('input', { type: 'email', placeholder: `tunombre@${CONFIG.dominio}`, ariaLabel: 'Tu correo corporativo' });
+      const entrar = el('button', { type: 'button', className: 'btn primario', textContent: 'Entrar' });
+      const ir = () => {
+        const v = correo.value.trim().toLowerCase();
+        if (!v.endsWith('@' + CONFIG.dominio)) { aviso(`Escribe tu correo @${CONFIG.dominio}.`); return; }
+        guardarCorreoPrueba(v);
+      };
+      entrar.addEventListener('click', ir);
+      correo.addEventListener('keydown', (e) => { if (e.key === 'Enter') ir(); });
+      caja.replaceChildren(el('span', {}, [el('strong', { textContent: 'Versión de pruebas.' }), ' Escribe tu correo corporativo para entrar:']), correo, entrar);
+    }
+    $('#barra-pruebas').hidden = false;
+  }
+
   async function api(url, opciones = {}) {
-    const r = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...opciones });
+    const headers = { 'Content-Type': 'application/json' };
+    const correoPrueba = leerCorreoPrueba();
+    if (correoPrueba) headers['X-Usuario-Prueba'] = correoPrueba;
+    const r = await fetch(url, { headers, ...opciones });
     const datos = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(datos.error || 'No se pudo completar la operación.');
     return datos;
@@ -405,12 +630,42 @@
   }
 
   // ---------- Navegación ----------
+  const TEXTOS = {
+    nueva: ['Solicita tus equipos <span class="destacado">en un solo pedido</span>',
+            'Agrega todos los equipos que necesitas. TI revisa el pedido, compara opciones y lo envía a Compras. Recibirás un número de radicado para hacerle seguimiento.'],
+    mias: ['Mis <span class="destacado">solicitudes</span>',
+           'Aquí ves el estado de las solicitudes que has registrado. Haz clic en una para ver el detalle.'],
+    ayuda: ['¿Cómo <span class="destacado">funciona</span>?',
+            'Guía rápida para pedir equipos y seguir su estado hasta que Compras los gestione.'],
+    ti: ['Seguimiento de <span class="destacado">solicitudes</span>',
+         'Todas las solicitudes de la empresa. Abre una para copiar el prompt, registrar la comparación, cambiar el estado o enviarla a Compras.'],
+  };
+  function pintarHero(vista) {
+    const clave = vista === 'seguimiento' ? (CONFIG?.esTI ? 'ti' : 'mias') : vista;
+    const [titulo, intro] = TEXTOS[clave];
+    $('#hero-ayuda').hidden = vista !== 'nueva';
+    $('#hero-titulo').innerHTML = titulo;
+    $('#hero-intro').textContent = intro;
+  }
+
   function mostrarVista(vista) {
+    pintarHero(vista);
     document.querySelectorAll('.pestana').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.vista === vista)));
     $('#vista-nueva').hidden = vista !== 'nueva';
     $('#vista-seguimiento').hidden = vista !== 'seguimiento';
+    $('#vista-ayuda').hidden = vista !== 'ayuda';
     if (vista === 'seguimiento') cargarLista();
+    window.scrollTo({ top: 0 });
   }
+  $('#hero-ayuda').addEventListener('click', () => mostrarVista('ayuda'));
+
+  // Guía: cambiar entre la parte del solicitante y la de TI
+  function mostrarGuia(cual) {
+    document.querySelectorAll('#guia-segmento button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.guia === cual)));
+    $('#guia-solicitante').hidden = cual !== 'solicitante';
+    $('#guia-ti').hidden = cual !== 'ti';
+  }
+  document.querySelectorAll('#guia-segmento button').forEach((b) => b.addEventListener('click', () => mostrarGuia(b.dataset.guia)));
   document.querySelectorAll('.pestana').forEach((b) => b.addEventListener('click', () => mostrarVista(b.dataset.vista)));
 
   // ---------- Equipos dentro del formulario ----------
@@ -707,6 +962,7 @@
 
   // ---------- Inicio ----------
   (async function iniciar() {
+    pintarHero('nueva');
     try {
       CONFIG = await api('/api/config');
     } catch (e) {
@@ -714,6 +970,7 @@
       $('#error-form').hidden = false;
       return;
     }
+    if (CONFIG.modoPruebas) pintarBarraPruebas();
     llenarSelect($('#area'), CONFIG.areas, 'Elige un área');
     llenarSelect($('#prioridad'), CONFIG.prioridades, 'Elige la prioridad');
     llenarSelect($('#f-estado'), CONFIG.estados, 'Todos');
@@ -721,10 +978,20 @@
     llenarSelect($('#det-nuevo-estado'), CONFIG.estados);
     $('#solicitanteCorreo').placeholder = `tunombre@${CONFIG.dominio}`;
 
-    Object.keys(CONFIG.catalogo).forEach((tipo) => {
-      const b = el('button', { type: 'button', className: 'btn', textContent: `+ ${tipo}` });
-      b.addEventListener('click', () => agregarItem(tipo));
-      $('#botones-agregar').append(b);
+    // Botones para agregar equipos, agrupados por categoría
+    const grupos = {};
+    Object.entries(CONFIG.catalogo).forEach(([tipo, def]) => {
+      const g = def.grupo || 'Otros equipos';
+      (grupos[g] = grupos[g] || []).push(tipo);
+    });
+    Object.entries(grupos).forEach(([grupo, tipos]) => {
+      const fila = el('div', { className: 'fila' });
+      tipos.forEach((tipo) => {
+        const b = el('button', { type: 'button', className: 'btn', textContent: `+ ${tipo}` });
+        b.addEventListener('click', () => agregarItem(tipo));
+        fila.append(b);
+      });
+      $('#botones-agregar').append(el('div', { className: 'grupo-equipos' }, [el('h4', { textContent: grupo }), fila]));
     });
 
     const guardado = solicitanteGuardado();
@@ -736,10 +1003,7 @@
     document.querySelectorAll('.solo-ti').forEach((n) => (n.hidden = !CONFIG.esTI));
     if (CONFIG.esTI) {
       $('#pestana-seguimiento').textContent = 'Seguimiento';
-      $('#seg-titulo').textContent = 'Seguimiento de solicitudes';
-      $('#seg-intro').textContent = 'Todas las solicitudes de la empresa. Abre una para copiar el prompt, registrar la comparación, cambiar el estado o enviarla a Compras.';
-    } else {
-      $('#seg-intro').textContent = 'Aquí ves el estado de las solicitudes que has registrado. Haz clic en una para ver el detalle.';
+      $('#guia-segmento').hidden = false;
     }
   })();
 </script>
