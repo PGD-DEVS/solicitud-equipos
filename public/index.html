@@ -356,6 +356,7 @@
       <p>Solicitud registrada. Tu número de radicado es:</p>
       <span class="tag grande" id="conf-radicado"></span>
       <p class="intro" style="margin-top:1.25rem">Guárdalo para consultar el estado en la pestaña Mis solicitudes.</p>
+      <p class="intro" id="conf-correo" hidden style="margin-top:-1rem">También te enviamos la confirmación y el PDF a tu correo.</p>
       <div class="acciones">
         <button class="btn" id="conf-pdf">Descargar PDF</button>
         <button class="btn primario" id="conf-nueva">Registrar otra solicitud</button>
@@ -744,6 +745,12 @@
     }));
   }
 
+  // Fecha de hoy en el computador de la persona, en formato AAAA-MM-DD
+  function hoy() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
   // ---------- Formulario ----------
   $('#form-solicitud').addEventListener('input', () => { $('#error-form').hidden = true; });
 
@@ -753,11 +760,18 @@
     datos.items = leerItems();
     const error = $('#error-form');
     error.hidden = true;
+    if (datos.fechaRequerida && datos.fechaRequerida < hoy()) {
+      error.textContent = 'La fecha en que necesitas los equipos no puede ser anterior a hoy.';
+      error.hidden = false;
+      $('#fechaRequerida').focus();
+      return;
+    }
     const boton = $('#btn-registrar');
     boton.disabled = true;
     boton.textContent = 'Registrando…';
     try {
-      const { radicado } = await api('/api/solicitudes', { method: 'POST', body: JSON.stringify(datos) });
+      const { radicado, correoEnviado } = await api('/api/solicitudes', { method: 'POST', body: JSON.stringify(datos) });
+      $('#conf-correo').hidden = !correoEnviado;
       guardarSolicitante(datos.solicitanteNombre, datos.solicitanteCorreo);
       ultimoRadicado = radicado;
       $('#conf-radicado').textContent = radicado;
@@ -782,6 +796,7 @@
     const f = $('#form-solicitud');
     ['proyecto', 'prioridad', 'fechaRequerida', 'justificacion'].forEach((c) => (f.elements[c].value = ''));
     $('#items').replaceChildren();
+    $('#fechaRequerida').min = hoy();
     actualizarSinItems();
     $('#confirmacion').hidden = true;
     $('#bloque-form').hidden = false;
@@ -971,6 +986,7 @@
       return;
     }
     if (CONFIG.modoPruebas) pintarBarraPruebas();
+    $('#fechaRequerida').min = hoy();
     llenarSelect($('#area'), CONFIG.areas, 'Elige un área');
     llenarSelect($('#prioridad'), CONFIG.prioridades, 'Elige la prioridad');
     llenarSelect($('#f-estado'), CONFIG.estados, 'Todos');
